@@ -5,7 +5,12 @@ using System.Linq;
 
 namespace SharpQuadTrees
 {
-    public class QuadTreeLeaf<TContent, TAverage>
+    /// <summary>
+    /// Represents a node of a quad tree that doesn't have any children.
+    /// </summary>
+    /// <typeparam name="TContent">The type of the items that are stored in the quad tree.</typeparam>
+    /// <typeparam name="TAverage">The type used for averaging the values of the content items.</typeparam>
+    public class QuadTreeLeaf<TContent, TAverage> : QuadTreeNode<TContent, TAverage>
     {
         /// <summary>
         /// Backing field for the AggregateAverages property.
@@ -33,23 +38,6 @@ namespace SharpQuadTrees
         private Func<TContent, double> getContentY;
 
         /// <summary>
-        /// Takes an average-value and the average-value aggregator, and returns the resulting average-value.
-        /// </summary>
-        public Func<TAverage, TAverage, TAverage> AggregateAverages
-        {
-            get { return aggregateAverages; }
-            set
-            {
-                throw new NotImplementedException("Invalidate the current average-value calculation.");
-            }
-        }
-
-        /// <summary>
-        /// Gets the average-value of the content.
-        /// </summary>
-        public TAverage Average { get; private set; }
-
-        /// <summary>
         /// Gets a read only collection of the content.
         /// </summary>
         public ReadOnlyCollection<TContent> Content
@@ -65,45 +53,13 @@ namespace SharpQuadTrees
             get { return getAverage; }
             set
             {
-                throw new NotImplementedException("Invalidate the current average-value calculation.");
+                if (!getAverage.Equals(value))
+                {
+                    getAverage = value;
+                    calculateAverage();
+                }
             }
         }
-
-        /// <summary>
-        /// Gets the x coordinate of the quad's center.
-        /// </summary>
-        public double XCenter
-        {
-            get { return (XMin + XMax) / 2; }
-        }
-
-        /// <summary>
-        /// Gets the exclusive maximum value for the x coordinate.
-        /// </summary>
-        public double XMax { get; private set; }
-
-        /// <summary>
-        /// Gets the inclusive minimum value for the x coordinate.
-        /// </summary>
-        public double XMin { get; private set; }
-
-        /// <summary>
-        /// Gets the y coordinate of the quad's center.
-        /// </summary>
-        public double YCenter
-        {
-            get { return (YMin + YMax) / 2; }
-        }
-
-        /// <summary>
-        /// Gets the exclusive maximum value for the y coordinate.
-        /// </summary>
-        public double YMax { get; private set; }
-
-        /// <summary>
-        /// Gets the inclusive minimum value for the y coordinate.
-        /// </summary>
-        public double YMin { get; private set; }
 
         /// <summary>
         /// Creates a new instance of the <see cref="SharpQuadTrees.QuadTreeLeaf"/> class with the given size ranges, content, and its accessors.
@@ -145,6 +101,8 @@ namespace SharpQuadTrees
                     double itemY = this.getContentY(item);
                     return itemX >= XMin || itemX < XMax || itemY >= YMin || itemY < YMax;
                 }).ToList();
+
+            calculateAverage();
         }
 
         /// <summary>
@@ -196,13 +154,15 @@ namespace SharpQuadTrees
                 else if (y >= YMax)
                     YMax = y + double.Epsilon;
             }
+
+            calculateAverage();
         }
 
         /// <summary>
         /// Splits the QuadTreeLeaf in the center and returns the resulting QuadTree.
         /// </summary>
         /// <returns>The QuadTree resulting from the split.</returns>
-        public QuadTreeBranch<TContent, TAverage> Split()
+        public override QuadTreeNode<TContent, TAverage> Split()
         {
             return Split(XCenter, YCenter);
         }
@@ -213,7 +173,7 @@ namespace SharpQuadTrees
         /// <param name="x">The x coordinate of the point.</param>
         /// <param name="y">The y coordinate of the point.</param>
         /// <returns>The QuadTree resulting from the split.</returns>
-        public QuadTreeBranch<TContent, TAverage> Split(double x, double y)
+        public override QuadTreeNode<TContent, TAverage> Split(double x, double y)
         {
             //a coordinate has to be less than or equal to its max - double.Epsilon, because a content item's maximum coordinate can be max - double.Epsilon
             //so to ensure that there can be a content item in the greater-than-part the division must be double.Epsilon before the max of the axis.
@@ -246,6 +206,24 @@ namespace SharpQuadTrees
                 content.ToArray());
 
             return new QuadTreeBranch<TContent, TAverage>(AggregateAverages, topRight, bottomRight, bottomLeft, topLeft);
+        }
+
+        /// <summary>
+        /// Calculates the average-value of the content items and sets the Average property to it.
+        /// </summary>
+        protected override void calculateAverage()
+        {
+            if (content.Count == 0)
+                Average = default(TAverage);
+
+            TAverage aggregator = GetAverage(content[0]);
+
+            foreach (TContent item in content.Skip(1))
+            {
+                aggregator = AggregateAverages(GetAverage(item), aggregator);
+            }
+
+            Average = aggregator;
         }
     }
 }

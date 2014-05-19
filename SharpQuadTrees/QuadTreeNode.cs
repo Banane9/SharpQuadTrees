@@ -12,44 +12,31 @@ namespace SharpQuadTrees
     public abstract class QuadTreeNode<TContent, TAverage>
     {
         /// <summary>
-        /// Backing field for the AggregateAverages property.
-        /// </summary>
-        private Func<TAverage, TAverage, TAverage> aggregateAverages;
-
-        /// <summary>
         /// Backing field for the Average property.
         /// </summary>
         private TAverage average;
 
         /// <summary>
-        /// Takes an average-value and the average-value aggregator, and returns the resulting average-value.
+        /// Whether the Average property was calculated with current information.
         /// </summary>
-        public Func<TAverage, TAverage, TAverage> AggregateAverages
-        {
-            get { return aggregateAverages; }
-            set
-            {
-                if (!aggregateAverages.Equals(value))
-                {
-                    aggregateAverages = value;
-                    calculateAverage();
-                }
-            }
-        }
+        private bool isAverageCurrent = false;
 
         /// <summary>
         /// Gets the average-value of the content.
         /// </summary>
         public TAverage Average
         {
-            get { return average; }
+            get
+            {
+                if (!isAverageCurrent)
+                    calculateAverage();
+
+                return average;
+            }
             set
             {
-                if (!average.Equals(value))
-                {
-                    average = value;
-                    onAverageChanged();
-                }
+                average = value;
+                validateAverage();
             }
         }
 
@@ -90,6 +77,22 @@ namespace SharpQuadTrees
         public double YMin { get; protected set; }
 
         /// <summary>
+        /// Gets the <see cref="SharpQuadTrees.QuadTreeController"/> used for handling the content.
+        /// </summary>
+        protected QuadTreeController<TContent, TAverage> controller { get; private set; }
+
+        /// <summary>
+        /// Creates a new instance of the <see cref="SharpQuadTrees.QuadTreeNode"/> class with the given controller.
+        /// Only available in derived classes.
+        /// </summary>
+        /// <param name="controller">Controller used for handling the content.</param>
+        protected QuadTreeNode(QuadTreeController<TContent, TAverage> controller)
+        {
+            this.controller = controller;
+            this.controller.AverageCalculationChanged += controller_AverageCalculationChanged;
+        }
+
+        /// <summary>
         /// Splits the node in the center and returns the resulting node.
         /// </summary>
         /// <returns>The node resulting from the split.</returns>
@@ -109,23 +112,28 @@ namespace SharpQuadTrees
         protected abstract void calculateAverage();
 
         /// <summary>
-        /// Fires the AverageChanged event.
+        /// Marks the Average property as not being calculated with current information.
         /// </summary>
-        protected void onAverageChanged()
+        protected void invalidateAverage()
         {
-            if (AverageChanged != null)
-                AverageChanged(this);
+            isAverageCurrent = false;
         }
 
         /// <summary>
-        /// EventHandler for the AverageChanged event.
+        /// Gets called when the controllers' AverageCalculationChanged event fires.
         /// </summary>
-        /// <param name="sender"></param>
-        public delegate void AverageChangedEventHandler(QuadTreeNode<TContent, TAverage> sender);
+        /// <param name="sender">The QuadTreeController for which the way it calculates averages changed.</param>
+        private void controller_AverageCalculationChanged(QuadTreeController<TContent, TAverage> sender)
+        {
+            invalidateAverage();
+        }
 
         /// <summary>
-        /// Fires after the value of the Average property changed.
+        /// Marks the Average property as having been calculated with current information.
         /// </summary>
-        public event AverageChangedEventHandler AverageChanged;
+        private void validateAverage()
+        {
+            isAverageCurrent = true;
+        }
     }
 }

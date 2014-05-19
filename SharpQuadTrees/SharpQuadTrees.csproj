@@ -37,6 +37,7 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="QuadTreeController.cs" />
     <Compile Include="QuadTreeNode.cs" />
     <Compile Include="QuadTreeBranch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

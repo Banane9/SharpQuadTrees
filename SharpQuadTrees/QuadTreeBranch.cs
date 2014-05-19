@@ -39,25 +39,17 @@ namespace SharpQuadTrees
         /// <param name="bottomRight">The QuadTreeLeaf in the bottom right part of the QuadTreeBranch.</param>
         /// <param name="bottomLeft">The QuadTreeLeaf in the bottom left part of the QuadTreeBranch.</param>
         /// <param name="topLeft">The QuadTreeLeaf in the top left part of the QuadTreeBranch.</param>
-        public QuadTreeBranch(Func<TAverage, TAverage, TAverage> aggregateAverages,
+        public QuadTreeBranch(QuadTreeController<TContent, TAverage> controller,
             QuadTreeNode<TContent, TAverage> topRight, QuadTreeNode<TContent, TAverage> bottomRight,
             QuadTreeNode<TContent, TAverage> bottomLeft, QuadTreeNode<TContent, TAverage> topLeft)
+            : base(controller)
         {
             TopRight = topRight;
-            TopRight.AverageChanged += child_AverageChanged;
-
             BottomRight = bottomRight;
-            BottomRight.AverageChanged += child_AverageChanged;
-
             BottomLeft = bottomLeft;
-            BottomLeft.AverageChanged += child_AverageChanged;
-
             TopLeft = topLeft;
-            TopLeft.AverageChanged += child_AverageChanged;
 
             setSize();
-
-            AggregateAverages = aggregateAverages;
         }
 
         /// <summary>
@@ -86,19 +78,10 @@ namespace SharpQuadTrees
         protected override void calculateAverage()
         {
             //Nested call that uses the last one's return value as aggregator; because I can.
-            Average = AggregateAverages(TopLeft.Average,
-                AggregateAverages(BottomLeft.Average,
-                    AggregateAverages(BottomRight.Average,
+            Average = controller.AggregateAverages(TopLeft.Average,
+                controller.AggregateAverages(BottomLeft.Average,
+                    controller.AggregateAverages(BottomRight.Average,
                         TopRight.Average)));
-        }
-
-        /// <summary>
-        /// Gets called for the AverageChanged event of children.
-        /// </summary>
-        /// <param name="sender"></param>
-        private void child_AverageChanged(QuadTreeNode<TContent, TAverage> sender)
-        {
-            calculateAverage();
         }
 
         /// <summary>

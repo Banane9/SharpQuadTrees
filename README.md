@@ -1,7 +1,13 @@
 SharpQuadTrees
 ==============
 
-Generic quad tree implementation in C#.
+Generic quad tree implementation in C# that's supposed to work on (according to the portable DLL selector):
+
+* Silverlight 5+
+* Windows Phone 8+
+* Windows Phone Silverlight 8+
+* Xamarin.Android
+* Xamarin.iOS
 
 [Wikipedia Article on Quad Trees](http://en.wikipedia.org/wiki/Quadtree)
 

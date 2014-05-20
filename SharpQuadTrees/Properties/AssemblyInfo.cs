@@ -7,14 +7,14 @@ using System.Runtime.InteropServices;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die einer Assembly zugeordnet sind.
 [assembly: AssemblyTitle("SharpQuadTrees")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Generic Quad Tree Algorithm Implementation")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("SharpQuadTrees")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: NeutralResourcesLanguage("de")]
+[assembly: NeutralResourcesLanguage("en")]
 
 // Versionsinformationen für eine Assembly bestehen aus den folgenden vier Werten:
 //

@@ -34,7 +34,7 @@ namespace SharpQuadTrees
         /// <summary>
         /// Creates a new instance of the <see cref="SharpQuadTrees.QuadTreeBranch"/> class with the given <see cref="SharpQuadTrees.QuadTreeLeaf"/>s and average-aggrigation function
         /// </summary>
-        /// <param name="aggregateAverages">Function that takes an average-value and the average-value aggregator, and returns the resulting average-value.</param>
+        /// <param name="controller">Controller used for handling the content.</param>
         /// <param name="topRight">The QuadTreeLeaf in the top right part of the QuadTreeBranch.</param>
         /// <param name="bottomRight">The QuadTreeLeaf in the bottom right part of the QuadTreeBranch.</param>
         /// <param name="bottomLeft">The QuadTreeLeaf in the bottom left part of the QuadTreeBranch.</param>

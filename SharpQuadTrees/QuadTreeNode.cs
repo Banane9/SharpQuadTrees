@@ -89,7 +89,6 @@ namespace SharpQuadTrees
         protected QuadTreeNode(QuadTreeController<TContent, TAverage> controller)
         {
             this.controller = controller;
-            this.controller.AverageCalculationChanged += controller_AverageCalculationChanged;
         }
 
         /// <summary>
@@ -117,15 +116,6 @@ namespace SharpQuadTrees
         protected void invalidateAverage()
         {
             isAverageCurrent = false;
-        }
-
-        /// <summary>
-        /// Gets called when the controllers' AverageCalculationChanged event fires.
-        /// </summary>
-        /// <param name="sender">The QuadTreeController for which the way it calculates averages changed.</param>
-        private void controller_AverageCalculationChanged(QuadTreeController<TContent, TAverage> sender)
-        {
-            invalidateAverage();
         }
 
         /// <summary>

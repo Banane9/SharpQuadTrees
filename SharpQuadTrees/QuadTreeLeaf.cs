@@ -13,12 +13,12 @@ namespace SharpQuadTrees
     public class QuadTreeLeaf<TContent, TAverage> : QuadTreeNode<TContent, TAverage>
     {
         /// <summary>
-        /// Stores the content of this QuadTreeLeaf.
+        /// Stores the content items of this QuadTreeLeaf.
         /// </summary>
         private List<TContent> content;
 
         /// <summary>
-        /// Gets a read only collection of the content.
+        /// Gets a readonly collection of the content.
         /// </summary>
         public ReadOnlyCollection<TContent> Content
         {

@@ -92,17 +92,50 @@ namespace SharpQuadTrees
         }
 
         /// <summary>
-        /// Splits the node in the center and returns the resulting node.
+        /// Gets an IEnumerable of content items.
         /// </summary>
-        /// <returns>The node resulting from the split.</returns>
-        public abstract QuadTreeNode<TContent, TAverage> Split();
+        /// <returns>IEnumerable of the content items.</returns>
+        public abstract IEnumerable<TContent> GetContent();
 
         /// <summary>
-        /// Splits the node at the given point and returns the resulting node.
+        /// Gets an IEnumerable of the nodes that don't have children (leafs).
+        /// </summary>
+        /// <returns>IEnumerable of quad tree leafs.</returns>
+        public abstract IEnumerable<QuadTreeNode<TContent, TAverage>> GetLeafs();
+
+        /// <summary>
+        /// Returns whether the given point is inside the node.
         /// </summary>
         /// <param name="x">The x coordinate of the point.</param>
         /// <param name="y">The y coordinate of the point.</param>
-        /// <returns>The node resulting from the split.</returns>
+        /// <returns>Whether the point is inside the node.</returns>
+        public bool IsInNode(double x, double y)
+        {
+            //min is inclusive, max exclusive
+            return XMin <= x && XMax > x && YMin <= y && YMax > y;
+        }
+
+        /// <summary>
+        /// Splits the given leaf at the given point and returns the resulting node (itself if it wasn't split, or the branch resulting from the split).
+        /// </summary>
+        /// <param name="leaf">The leaf supposed to be split.</param>
+        /// <param name="x">The x coordinate of the point.</param>
+        /// <param name="y">The y coordinate of the point.</param>
+        /// <returns>The resulting node (itself if it wasn't split, or the branch resulting from the split).</returns>
+        public abstract QuadTreeNode<TContent, TAverage> Split(QuadTreeNode<TContent, TAverage> leaf, double x, double y);
+
+        /// <summary>
+        /// Splits leaf(s) based on the controller.
+        /// </summary>
+        /// <returns>The node resulting from the split (itself if it wasn't split, or the branch resulting from the split).</returns>
+        public abstract QuadTreeNode<TContent, TAverage> Split();
+
+        /// <summary>
+        /// Splits the leaf node that contains the point at the given point and returns the resulting node (itself if it wasn't split, or the branch resulting from the split).
+        /// </summary>
+        /// <param name="x">The x coordinate of the point.</param>
+        /// <param name="y">The y coordinate of the point.</param>
+        /// <returns>The node resulting from the split (itself if it wasn't split, or the branch resulting from the split).</returns>
         public abstract QuadTreeNode<TContent, TAverage> Split(double x, double y);
 
         /// <summary>
@@ -116,6 +149,24 @@ namespace SharpQuadTrees
         protected void invalidateAverage()
         {
             isAverageCurrent = false;
+        }
+
+        /// <summary>
+        /// Throws a descriptive ArgumentOutOfRangeException when the given point is outside of this node.
+        /// </summary>
+        /// <param name="x">The x coordinate of the point.</param>
+        /// <param name="y">The y coordinate of the point.</param>
+        protected void throwWhenOutsideNode(double x, double y)
+        {
+            //a coordinate has to be less than or equal to its max - double.Epsilon, because a content item's maximum coordinate can be max - double.Epsilon
+            //so to ensure that there can be a content item in the greater-than-part the division must be double.Epsilon before the max of the axis.
+            //For the less-than-part it must be at least min + double.Epsilon, so <= is enough.
+            if ((x <= XMin || x >= (XMax - double.Epsilon)) && (y <= YMin || y >= (YMax - double.Epsilon)))
+                throw new ArgumentOutOfRangeException("x & y", "Both coordinates of the point weren't inside the range of this QuadTreeLeaf.");
+            else if (x <= XMin || x >= (XMax - double.Epsilon))
+                throw new ArgumentOutOfRangeException("x", "The x coordinate of the point wasn't inside the range of this QuadTreeLeaf.");
+            else if (y <= YMin || y >= (YMax - double.Epsilon))
+                throw new ArgumentOutOfRangeException("y", "The y coordinate of the point wasn't inside the range of this QuadTreeLeaf.");
         }
 
         /// <summary>

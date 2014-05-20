@@ -53,23 +53,106 @@ namespace SharpQuadTrees
         }
 
         /// <summary>
-        /// Not supported.
+        /// Gets an IEnumerable of the branches' content items.
         /// </summary>
-        /// <returns></returns>
-        public override QuadTreeNode<TContent, TAverage> Split()
+        /// <returns>IEnumerable of the branches' content items.</returns>
+        public override IEnumerable<TContent> GetContent()
         {
-            throw new NotSupportedException("This node is already split.");
+            //Change pattern with example from http://blogs.msdn.com/b/wesdyer/archive/2007/03/23/all-about-iterators.aspx ?
+
+            foreach (var item in TopRight.GetContent())
+                yield return item;
+
+            foreach (var item in BottomRight.GetContent())
+                yield return item;
+
+            foreach (var item in BottomLeft.GetContent())
+                yield return item;
+
+            foreach (var item in TopLeft.GetContent())
+                yield return item;
         }
 
         /// <summary>
-        /// Not supported.
+        /// Gets an IEnumerable of this branch's leafs.
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
+        /// <returns>IEnumerable of this branch's leafs.</returns>
+        public override IEnumerable<QuadTreeNode<TContent, TAverage>> GetLeafs()
+        {
+            //Change pattern with example from http://blogs.msdn.com/b/wesdyer/archive/2007/03/23/all-about-iterators.aspx ?
+
+            foreach (var node in TopRight.GetLeafs())
+                yield return node;
+
+            foreach (var node in BottomRight.GetLeafs())
+                yield return node;
+
+            foreach (var node in BottomLeft.GetLeafs())
+                yield return node;
+
+            foreach (var node in TopLeft.GetLeafs())
+                yield return node;
+        }
+
+        /// <summary>
+        /// Splits leaf(s) based on the controller's GetNodesToSplit method and returns itself (with changes, if they happened).
+        /// </summary>
+        /// <returns>Itself (with changes, if they happened).</returns>
+        public override QuadTreeNode<TContent, TAverage> Split()
+        {
+            foreach (var leaf in controller.GetNodesToSplit(GetLeafs()))
+                Split(leaf, controller.GetSplitX(leaf), controller.GetSplitY(leaf));
+
+            return this;
+        }
+
+        /// <summary>
+        /// Splits the leaf node that contains the point at the given point and returns itself (with changes, if they happened).
+        /// </summary>
+        /// <param name="x">The x coordinate of the point.</param>
+        /// <param name="y">The y coordinate of the point.</param>
+        /// <returns>Itself (with changes, if they happened).</returns>
         public override QuadTreeNode<TContent, TAverage> Split(double x, double y)
         {
-            throw new NotSupportedException("This node is already split.");
+            throwWhenOutsideNode(x, y);
+
+            if (TopRight.IsInNode(x, y))
+                TopRight = TopRight.Split(x, y);
+
+            if (BottomRight.IsInNode(x, y))
+                BottomRight = BottomRight.Split(x, y);
+
+            if (BottomLeft.IsInNode(x, y))
+                BottomLeft = BottomLeft.Split(x, y);
+
+            if (TopLeft.IsInNode(x, y))
+                TopLeft = TopLeft.Split(x, y);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Splits the given leaf at the given point and returns itself (with changes, if they happened).
+        /// </summary>
+        /// <param name="leaf">The leaf supposed to be split.</param>
+        /// <param name="x">The x coordinate of the point.</param>
+        /// <param name="y">The y coordinate of the point.</param>
+        /// <returns>Itself (with changes, if they happened).</returns>
+        public override QuadTreeNode<TContent, TAverage> Split(QuadTreeNode<TContent, TAverage> leaf, double x, double y)
+        {
+            if (TopRight.IsInNode(x, y))
+                TopRight = TopRight.Split(leaf, x, y);
+
+            if (BottomRight.IsInNode(x, y))
+                BottomRight = BottomRight.Split(leaf, x, y);
+
+            if (BottomLeft.IsInNode(x, y))
+                BottomLeft = BottomLeft.Split(leaf, x, y);
+
+            if (TopLeft.IsInNode(x, y))
+                TopLeft = TopLeft.Split(leaf, x, y);
+
+            return this;
         }
 
         /// <summary>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace SharpQuadTrees
@@ -16,14 +15,6 @@ namespace SharpQuadTrees
         /// Stores the content items of this QuadTreeLeaf.
         /// </summary>
         private List<TContent> content;
-
-        /// <summary>
-        /// Gets a readonly collection of the content.
-        /// </summary>
-        public ReadOnlyCollection<TContent> Content
-        {
-            get { return new ReadOnlyCollection<TContent>(content); }
-        }
 
         /// <summary>
         /// Creates a new instance of the <see cref="SharpQuadTrees.QuadTreeLeaf"/> class with the given size ranges, content, and its accessors.
@@ -49,14 +40,7 @@ namespace SharpQuadTrees
             YMin = Math.Min(yStart, yEnd);
             YMax = Math.Max(yStart, yEnd);
 
-            this.content = content.Where(item =>
-                {
-                    double itemX = controller.GetContentX(item);
-                    double itemY = controller.GetContentY(item);
-                    return itemX >= XMin || itemX < XMax || itemY >= YMin || itemY < YMax;
-                }).ToList();
-
-            calculateAverage();
+            this.content = content.Where(item => IsInNode(controller.GetContentX(item), controller.GetContentY(item))).ToList();
         }
 
         /// <summary>
@@ -97,36 +81,45 @@ namespace SharpQuadTrees
                 else if (y >= YMax)
                     YMax = y + double.Epsilon;
             }
-
-            calculateAverage();
         }
 
         /// <summary>
-        /// Splits the QuadTreeLeaf in the center and returns the resulting QuadTree.
+        /// Gets an IEnumerable of content items.
         /// </summary>
-        /// <returns>The QuadTree resulting from the split.</returns>
+        /// <returns>IEnumerable of the content items.</returns>
+        public override IEnumerable<TContent> GetContent()
+        {
+            foreach (TContent item in content)
+                yield return item;
+        }
+
+        /// <summary>
+        /// Gets an IEnumerable of the nodes that don't have children (leafs).
+        /// </summary>
+        /// <returns>This leaf.</returns>
+        public override IEnumerable<QuadTreeNode<TContent, TAverage>> GetLeafs()
+        {
+            yield return this;
+        }
+
+        /// <summary>
+        /// Splits the leaf at the point given by the controller's GetSplitX and GetSplitY methods.
+        /// </summary>
+        /// <returns>The node resulting from the split.</returns>
         public override QuadTreeNode<TContent, TAverage> Split()
         {
-            return Split(XCenter, YCenter);
+            return Split(controller.GetSplitX(this), controller.GetSplitY(this));
         }
 
         /// <summary>
-        /// Splits the QuadTreeLeaf at the given point and returns the resulting QuadTree.
+        /// Splits this QuadTreeLeaf at the given point and returns the resulting QuadTreeBranch.
         /// </summary>
         /// <param name="x">The x coordinate of the point.</param>
         /// <param name="y">The y coordinate of the point.</param>
-        /// <returns>The QuadTree resulting from the split.</returns>
+        /// <returns>The QuadTreeBranch resulting from the split.</returns>
         public override QuadTreeNode<TContent, TAverage> Split(double x, double y)
         {
-            //a coordinate has to be less than or equal to its max - double.Epsilon, because a content item's maximum coordinate can be max - double.Epsilon
-            //so to ensure that there can be a content item in the greater-than-part the division must be double.Epsilon before the max of the axis.
-            //For the less-than-part it must be at least min + double.Epsilon, so <= is enough.
-            if ((x <= XMin || x >= (XMax - double.Epsilon)) && (y <= YMin || y >= (YMax - double.Epsilon)))
-                throw new ArgumentOutOfRangeException("x & y", "Both coordinates of the point weren't inside the range of this QuadTreeLeaf.");
-            else if (x <= XMin || x >= (XMax - double.Epsilon))
-                throw new ArgumentOutOfRangeException("x", "The x coordinate of the point wasn't inside the range of this QuadTreeLeaf.");
-            else if (y <= YMin || y >= (YMax - double.Epsilon))
-                throw new ArgumentOutOfRangeException("y", "The y coordinate of the point wasn't inside the range of this QuadTreeLeaf.");
+            throwWhenOutsideNode(x, y);
 
             var topRight = new QuadTreeLeaf<TContent, TAverage>(x, XMax, y, YMax,
                 controller, content.ToArray());
@@ -144,7 +137,24 @@ namespace SharpQuadTrees
         }
 
         /// <summary>
-        /// Calculates the average-value of the content items and sets the Average property to it.
+        /// Splits the leaf at the given point if it matches the parameter and returns the resulting node (itself if it wasn't split, or the branch resulting from the split).
+        /// </summary>
+        /// <param name="leaf">The leaf supposed to be split.</param>
+        /// <param name="x">The x coordinate of the point.</param>
+        /// <param name="y">The y coordinate of the point.</param>
+        /// <returns>The resulting node (itself if it wasn't split, or the branch resulting from the split).</returns>
+        public override QuadTreeNode<TContent, TAverage> Split(QuadTreeNode<TContent, TAverage> leaf, double x, double y)
+        {
+            throwWhenOutsideNode(x, y);
+
+            if (!this.Equals(leaf))
+                return this;
+
+            return Split(x, y);
+        }
+
+        /// <summary>
+        /// Calculates the average-value of the content items and sets the Average property to it. Uses default() if there's no content.
         /// </summary>
         protected override void calculateAverage()
         {

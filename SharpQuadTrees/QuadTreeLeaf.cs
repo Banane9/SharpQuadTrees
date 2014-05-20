@@ -35,12 +35,17 @@ namespace SharpQuadTrees
             params TContent[] content)
             : base(controller)
         {
+            if (content == null)
+                throw new ArgumentNullException("content", "Content can't be null.");
+
             XMin = Math.Min(xStart, xEnd);
             XMax = Math.Max(xStart, xEnd);
             YMin = Math.Min(yStart, yEnd);
             YMax = Math.Max(yStart, yEnd);
 
-            this.content = content.Where(item => IsInNode(controller.GetContentX(item), controller.GetContentY(item))).ToList();
+            this.content = content.Where(item =>
+                IsInNode(controller.GetContentX(item), controller.GetContentY(item))
+                ).ToList();
         }
 
         /// <summary>
@@ -56,31 +61,21 @@ namespace SharpQuadTrees
         public QuadTreeLeaf(IQuadTreeController<TContent, TAverage> controller, params TContent[] content)
             : base(controller)
         {
+            if (content == null)
+                throw new ArgumentNullException("content", "Content can't be null.");
+
             if (content.Length < 1)
                 throw new ArgumentOutOfRangeException("content", "To use this constructor, there has to be at least one content item.");
 
-            XMin = controller.GetContentX(content[0]);
-            XMax = XMin;
-            YMin = controller.GetContentY(content[0]);
-            YMax = YMin;
+            //Intermediate IEnumerable of an anonymous type with the coordinates for each item to reduce calls to the controller's method.
+            var coordinates = content.Select(item => new { X = controller.GetContentX(item), Y = controller.GetContentY(item) });
 
-            //Find the lowest/highest x and y. Because Max is exclusive, the value is increased by the smallest amount,
-            //which means that the next one only has to equal to it, to be higher than the last.
-            foreach (TContent item in content.Skip(1))
-            {
-                double x = controller.GetContentX(item);
-                double y = controller.GetContentY(item);
+            //Add double.Epsilon to max values, because they're exclusive.
+            XMin = coordinates.Min(coordinate => coordinate.X);
+            XMax = coordinates.Max(coordinate => coordinate.X) + double.Epsilon;
 
-                if (x < XMin)
-                    XMin = x;
-                else if (x >= XMax)
-                    XMax = x + double.Epsilon;
-
-                if (y < YMin)
-                    YMin = y;
-                else if (y >= YMax)
-                    YMax = y + double.Epsilon;
-            }
+            YMin = coordinates.Min(coordinate => coordinate.Y);
+            YMax = coordinates.Max(coordinate => coordinate.Y) + double.Epsilon;
         }
 
         /// <summary>
@@ -145,6 +140,10 @@ namespace SharpQuadTrees
         /// <returns>The resulting node (itself if it wasn't split, or the branch resulting from the split).</returns>
         public override QuadTreeNode<TContent, TAverage> Split(QuadTreeNode<TContent, TAverage> leaf, double x, double y)
         {
+            // Can't find a null leaf.
+            if (leaf == null)
+                return this;
+
             throwWhenOutsideNode(x, y);
 
             if (!this.Equals(leaf))
@@ -154,12 +153,15 @@ namespace SharpQuadTrees
         }
 
         /// <summary>
-        /// Calculates the average-value of the content items and sets the Average property to it. Uses default() if there's no content.
+        /// Calculates the average-value of the content items and sets the Average property to it. Uses the controller's NoContentAverage if there's no content.
         /// </summary>
         protected override void calculateAverage()
         {
             if (content.Count == 0)
-                Average = default(TAverage);
+            {
+                Average = controller.NoContentAverage;
+                return;
+            }
 
             TAverage aggregator = controller.GetAverage(content[0]);
 

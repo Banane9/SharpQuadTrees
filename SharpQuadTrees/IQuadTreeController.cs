@@ -7,6 +7,11 @@ namespace SharpQuadTrees
     public interface IQuadTreeController<TContent, TAverage>
     {
         /// <summary>
+        /// Gets the average-value that represents an average for no content.
+        /// </summary>
+        TAverage NoContentAverage { get; }
+
+        /// <summary>
         /// Takes an average-value and the average-value aggregator, and returns the resulting average-value.
         /// </summary>
         /// <param name="itemAverage">Average-value of a content item.</param>

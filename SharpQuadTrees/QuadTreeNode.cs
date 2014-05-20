@@ -22,7 +22,7 @@ namespace SharpQuadTrees
         private bool isAverageCurrent = false;
 
         /// <summary>
-        /// Gets the average-value of the content.
+        /// Gets the average-value of the content. Or the controller's NoContentAverage if there's no content.
         /// </summary>
         public TAverage Average
         {
@@ -88,6 +88,9 @@ namespace SharpQuadTrees
         /// <param name="controller">Controller used for handling the content.</param>
         protected QuadTreeNode(IQuadTreeController<TContent, TAverage> controller)
         {
+            if (controller == null)
+                throw new ArgumentNullException("controller", "Controller can't be null.");
+
             this.controller = controller;
         }
 

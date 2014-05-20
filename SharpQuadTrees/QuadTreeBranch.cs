@@ -39,7 +39,7 @@ namespace SharpQuadTrees
         /// <param name="bottomRight">The QuadTreeLeaf in the bottom right part of the QuadTreeBranch.</param>
         /// <param name="bottomLeft">The QuadTreeLeaf in the bottom left part of the QuadTreeBranch.</param>
         /// <param name="topLeft">The QuadTreeLeaf in the top left part of the QuadTreeBranch.</param>
-        public QuadTreeBranch(QuadTreeController<TContent, TAverage> controller,
+        public QuadTreeBranch(IQuadTreeController<TContent, TAverage> controller,
             QuadTreeNode<TContent, TAverage> topRight, QuadTreeNode<TContent, TAverage> bottomRight,
             QuadTreeNode<TContent, TAverage> bottomLeft, QuadTreeNode<TContent, TAverage> topLeft)
             : base(controller)

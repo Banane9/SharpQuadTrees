@@ -31,7 +31,7 @@ namespace SharpQuadTrees
         /// <param name="controller">Controller used for handling the content.</param>
         /// <param name="content">An array of content items.</param>
         public QuadTreeLeaf(double xStart, double xEnd, double yStart, double yEnd,
-            QuadTreeController<TContent, TAverage> controller,
+            IQuadTreeController<TContent, TAverage> controller,
             params TContent[] content)
             : base(controller)
         {
@@ -53,7 +53,7 @@ namespace SharpQuadTrees
         /// </summary>
         /// <param name="controller">Controller used for handling the content.</param>
         /// <param name="content">An array of content items.</param>
-        public QuadTreeLeaf(QuadTreeController<TContent, TAverage> controller, params TContent[] content)
+        public QuadTreeLeaf(IQuadTreeController<TContent, TAverage> controller, params TContent[] content)
             : base(controller)
         {
             if (content.Length < 1)

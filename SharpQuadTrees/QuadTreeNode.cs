@@ -79,14 +79,14 @@ namespace SharpQuadTrees
         /// <summary>
         /// Gets the <see cref="SharpQuadTrees.QuadTreeController"/> used for handling the content.
         /// </summary>
-        protected QuadTreeController<TContent, TAverage> controller { get; private set; }
+        protected IQuadTreeController<TContent, TAverage> controller { get; private set; }
 
         /// <summary>
         /// Creates a new instance of the <see cref="SharpQuadTrees.QuadTreeNode"/> class with the given controller.
         /// Only available in derived classes.
         /// </summary>
         /// <param name="controller">Controller used for handling the content.</param>
-        protected QuadTreeNode(QuadTreeController<TContent, TAverage> controller)
+        protected QuadTreeNode(IQuadTreeController<TContent, TAverage> controller)
         {
             this.controller = controller;
         }

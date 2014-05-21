@@ -72,17 +72,7 @@ namespace SharpQuadTrees
         {
             //TODO Change pattern with example from http://blogs.msdn.com/b/wesdyer/archive/2007/03/23/all-about-iterators.aspx ?
 
-            foreach (var item in TopRight.GetContent())
-                yield return item;
-
-            foreach (var item in BottomRight.GetContent())
-                yield return item;
-
-            foreach (var item in BottomLeft.GetContent())
-                yield return item;
-
-            foreach (var item in TopLeft.GetContent())
-                yield return item;
+            return enumerateChildren().SelectMany(node => node.GetContent());
         }
 
         /// <summary>
@@ -93,17 +83,7 @@ namespace SharpQuadTrees
         {
             //TODO Change pattern with example from http://blogs.msdn.com/b/wesdyer/archive/2007/03/23/all-about-iterators.aspx ?
 
-            foreach (var node in TopRight.GetLeafs())
-                yield return node;
-
-            foreach (var node in BottomRight.GetLeafs())
-                yield return node;
-
-            foreach (var node in BottomLeft.GetLeafs())
-                yield return node;
-
-            foreach (var node in TopLeft.GetLeafs())
-                yield return node;
+            return enumerateChildren().SelectMany(node => node.GetLeafs());
         }
 
         /// <summary>

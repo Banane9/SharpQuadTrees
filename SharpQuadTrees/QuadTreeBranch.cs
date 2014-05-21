@@ -120,6 +120,8 @@ namespace SharpQuadTrees
             if (TopLeft.IsInNode(x, y))
                 TopLeft = TopLeft.Split(x, y);
 
+            invalidateAverage();
+
             return this;
         }
 
@@ -149,6 +151,8 @@ namespace SharpQuadTrees
 
             if (TopLeft.IsInNode(x, y))
                 TopLeft = TopLeft.Split(leaf, x, y);
+
+            invalidateAverage();
 
             return this;
         }

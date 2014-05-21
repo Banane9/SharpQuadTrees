@@ -67,6 +67,8 @@ namespace SharpQuadTrees
             if (content.Length < 1)
                 throw new ArgumentOutOfRangeException("content", "To use this constructor, there has to be at least one content item.");
 
+            this.content = content.ToList();
+
             //Intermediate IEnumerable of an anonymous type with the coordinates for each item to reduce calls to the controller's method.
             var coordinates = content.Select(item => new { X = controller.GetContentX(item), Y = controller.GetContentY(item) });
 

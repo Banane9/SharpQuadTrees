@@ -162,20 +162,7 @@ namespace SharpQuadTrees
         /// </summary>
         protected override void calculateAverage()
         {
-            TAverage aggregator = controller.NoContentAverage;
-
-            foreach (var child in enumerateChildren())
-            {
-                if (!child.Average.Equals(controller.NoContentAverage))
-                {
-                    if (!aggregator.Equals(controller.NoContentAverage))
-                        aggregator = controller.AggregateAverages(child.Average, aggregator);
-                    else
-                        aggregator = child.Average;
-                }
-            }
-
-            Average = aggregator;
+            Average = controller.AggregateAverages(enumerateChildren().Select(child => child.Average));
         }
 
         /// <summary>

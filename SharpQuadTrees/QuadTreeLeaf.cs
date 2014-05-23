@@ -165,14 +165,7 @@ namespace SharpQuadTrees
                 return;
             }
 
-            TAverage aggregator = controller.GetAverage(content[0]);
-
-            foreach (TContent item in content.Skip(1))
-            {
-                aggregator = controller.AggregateAverages(controller.GetAverage(item), aggregator);
-            }
-
-            Average = aggregator;
+            Average = controller.GetAverage(GetContent());
         }
     }
 }

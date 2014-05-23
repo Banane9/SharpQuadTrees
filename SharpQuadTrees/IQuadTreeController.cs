@@ -12,17 +12,16 @@ namespace SharpQuadTrees
         TAverage NoContentAverage { get; }
 
         /// <summary>
-        /// Takes an average-value and the average-value aggregator, and returns the resulting average-value.
+        /// Takes an array of average-values and returns the resulting average-value.
         /// </summary>
-        /// <param name="itemAverage">Average-value of a content item.</param>
-        /// <param name="aggregator">Average aggregator.</param>
-        TAverage AggregateAverages(TAverage itemAverage, TAverage aggregator);
+        /// <param name="averages"></param>
+        TAverage AggregateAverages(IEnumerable<TAverage> averages);
 
         /// <summary>
-        /// Takes a content item and returns its average-value, that is later aggregated with the others.
+        /// Takes an array of content items and returns the average-value.
         /// </summary>
         /// <param name="item">The content item.</param>
-        TAverage GetAverage(TContent item);
+        TAverage GetAverage(IEnumerable<TContent> content);
 
         /// <summary>
         /// Gets a content item's x coordinate.

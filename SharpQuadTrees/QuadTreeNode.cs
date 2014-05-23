@@ -166,9 +166,9 @@ namespace SharpQuadTrees
             //For the less-than-part it must be at least min + double.Epsilon, so <= is enough.
             if ((x <= XMin || x >= (XMax - double.Epsilon)) && (y <= YMin || y >= (YMax - double.Epsilon)))
                 throw new ArgumentOutOfRangeException("x & y", "Both coordinates of the point weren't inside the range of this QuadTreeLeaf.");
-            else if (x <= XMin || x >= (XMax - double.Epsilon))
+            else if (x <= XMin || x >= XMax)
                 throw new ArgumentOutOfRangeException("x", "The x coordinate of the point wasn't inside the range of this QuadTreeLeaf.");
-            else if (y <= YMin || y >= (YMax - double.Epsilon))
+            else if (y <= YMin || y >= YMax)
                 throw new ArgumentOutOfRangeException("y", "The y coordinate of the point wasn't inside the range of this QuadTreeLeaf.");
         }
 

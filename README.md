@@ -28,4 +28,4 @@ When you call any `Split` method on it, it will return a `SharpQuadTrees.QuadTre
 
 ##License##
 
-#####[GPL V2](https://github.com/Banane9/SharpQuadTrees/edit/master/LICENSE.md)#####
+#####[GPL V2](https://github.com/Banane9/SharpQuadTrees/blob/master/LICENSE.md)#####

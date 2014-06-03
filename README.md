@@ -25,3 +25,7 @@ Then just create a `SharpQuadTrees.QuadTreeLeaf` with your controller and conten
 When you call any `Split` method on it, it will return a `SharpQuadTrees.QuadTreeBranch`, if it was split.
 
 ------------------------------------------------------------------------------------------------------------------
+
+##License##
+
+#####[GPL V2](https://github.com/Banane9/SharpQuadTrees/edit/master/LICENSE.md)#####

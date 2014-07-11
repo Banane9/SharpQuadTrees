@@ -27,3 +27,7 @@ When you call any `Split` method on it, it will return a `SharpQuadTrees.QuadTre
 For a more detailed example, check the [Quads](https://github.com/Banane9/Quads) project.
 
 ------------------------------------------------------------------------------------------------------------------
+
+##License##
+
+#####[GPL V2](https://github.com/Banane9/SharpQuadTrees/blob/master/LICENSE.md)#####

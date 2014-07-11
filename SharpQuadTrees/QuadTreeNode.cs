@@ -5,7 +5,7 @@ using System.Linq;
 namespace SharpQuadTrees
 {
     /// <summary>
-    /// Contains properties and functions that make it suitable as part of a quad tree.
+    /// The abstract base class for QuadTree nodes.
     /// </summary>
     /// <typeparam name="TContent">The type of the items that are stored in the quad tree.</typeparam>
     /// <typeparam name="TAverage">The type used for averaging the values of the content items.</typeparam>
@@ -77,12 +77,12 @@ namespace SharpQuadTrees
         public double YMin { get; protected set; }
 
         /// <summary>
-        /// Gets the <see cref="SharpQuadTrees.QuadTreeController"/> used for handling the content.
+        /// Gets the <see cref="SharpQuadTrees.IQuadTreeController&lt;TContent, TAcerage&gt;"/> used for handling the content.
         /// </summary>
         protected IQuadTreeController<TContent, TAverage> controller { get; private set; }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="SharpQuadTrees.QuadTreeNode"/> class with the given controller.
+        /// Creates a new instance of the <see cref="SharpQuadTrees.QuadTreeNode&lt;TContent, TAverage&gt;"/> class with the given controller.
         /// Only available in derived classes.
         /// </summary>
         /// <param name="controller">Controller used for handling the content.</param>

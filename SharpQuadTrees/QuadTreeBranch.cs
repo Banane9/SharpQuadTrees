@@ -32,7 +32,7 @@ namespace SharpQuadTrees
         public QuadTreeNode<TContent, TAverage> TopRight { get; private set; }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="SharpQuadTrees.QuadTreeBranch"/> class with the given <see cref="SharpQuadTrees.QuadTreeLeaf"/>s and average-aggrigation function
+        /// Creates a new instance of the <see cref="SharpQuadTrees.QuadTreeBranch&lt;TContent, TAverage&gt;"/> class with the given <see cref="SharpQuadTrees.QuadTreeLeaf&lt;TContent, TAverage&gt;"/>s and average-aggrigation function
         /// </summary>
         /// <param name="controller">Controller used for handling the content.</param>
         /// <param name="topRight">The QuadTreeLeaf in the top right part of the QuadTreeBranch.</param>

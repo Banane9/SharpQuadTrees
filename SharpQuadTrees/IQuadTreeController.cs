@@ -4,6 +4,11 @@ using System.Linq;
 
 namespace SharpQuadTrees
 {
+    /// <summary>
+    /// Interface for a class that can provide controller methods for a QuadTree.
+    /// </summary>
+    /// <typeparam name="TContent">The type of the items that are stored in the quad tree.</typeparam>
+    /// <typeparam name="TAverage">The type used for averaging the values of the content items.</typeparam>
     public interface IQuadTreeController<TContent, TAverage>
     {
         /// <summary>
@@ -12,15 +17,15 @@ namespace SharpQuadTrees
         TAverage NoContentAverage { get; }
 
         /// <summary>
-        /// Takes an array of average-values and returns the resulting average-value.
+        /// Takes an IEnumerable of average-values and returns the resulting average-value.
         /// </summary>
         /// <param name="averages"></param>
         TAverage AggregateAverages(IEnumerable<TAverage> averages);
 
         /// <summary>
-        /// Takes an array of content items and returns the average-value.
+        /// Takes an IEnumerable of content items and returns the average-value.
         /// </summary>
-        /// <param name="item">The content item.</param>
+        /// <param name="content">The content.</param>
         TAverage GetAverage(IEnumerable<TContent> content);
 
         /// <summary>

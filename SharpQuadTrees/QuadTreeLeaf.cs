@@ -17,7 +17,7 @@ namespace SharpQuadTrees
         private List<TContent> content;
 
         /// <summary>
-        /// Creates a new instance of the <see cref="SharpQuadTrees.QuadTreeLeaf"/> class with the given size ranges, content, and its accessors.
+        /// Creates a new instance of the <see cref="SharpQuadTrees.QuadTreeLeaf&lt;TContent, TAverage&gt;"/> class with the given size ranges, content, and its accessors.
         /// The content array is filtered based on the specified ranges for x and y.
         /// <para>
         /// The minimum value is inclusive, while the maximum value is exclusive.
@@ -49,7 +49,7 @@ namespace SharpQuadTrees
         }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="SharpQuadTrees.QuadTreeLeaf"/> class with the given content, and its accessors.
+        /// Creates a new instance of the <see cref="SharpQuadTrees.QuadTreeLeaf&lt;TContent, TAverage&gt;"/> class with the given content, and its accessors.
         /// The size ranges are found dynamically.
         /// <para>
         /// The minimum value is inclusive, while the maximum value is exclusive.

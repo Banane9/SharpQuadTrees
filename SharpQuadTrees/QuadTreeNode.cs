@@ -95,6 +95,16 @@ namespace SharpQuadTrees
         }
 
         /// <summary>
+        /// Returns whether all of the given items would be inside the node.
+        /// </summary>
+        /// <param name="items">The items to check.</param>
+        /// <returns>Whether all of the items would be inside the node.</returns>
+        public bool AreInsideNode(IEnumerable<TContent> items)
+        {
+            return items.Any(item => !IsInsideNode(item));
+        }
+
+        /// <summary>
         /// Gets an IEnumerable of content items.
         /// </summary>
         /// <returns>IEnumerable of the content items.</returns>
@@ -112,10 +122,20 @@ namespace SharpQuadTrees
         /// <param name="x">The x coordinate of the point.</param>
         /// <param name="y">The y coordinate of the point.</param>
         /// <returns>Whether the point is inside the node.</returns>
-        public bool IsInNode(double x, double y)
+        public bool IsInsideNode(double x, double y)
         {
             //min is inclusive, max exclusive
             return XMin <= x && XMax > x && YMin <= y && YMax > y;
+        }
+
+        /// <summary>
+        /// Return whether the given item would be inside the node.
+        /// </summary>
+        /// <param name="item">The item to check.</param>
+        /// <returns>Whether the item would be inside the node.</returns>
+        public bool IsInsideNode(TContent item)
+        {
+            return IsInsideNode(controller.GetContentX(item), controller.GetContentY(item));
         }
 
         /// <summary>

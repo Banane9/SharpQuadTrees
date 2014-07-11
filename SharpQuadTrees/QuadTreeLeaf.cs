@@ -44,7 +44,7 @@ namespace SharpQuadTrees
             YMax = Math.Max(yStart, yEnd);
 
             this.content = content.Where(item =>
-                IsInNode(controller.GetContentX(item), controller.GetContentY(item))
+                IsInsideNode(controller.GetContentX(item), controller.GetContentY(item))
                 ).ToList();
         }
 

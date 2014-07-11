@@ -108,16 +108,16 @@ namespace SharpQuadTrees
         {
             throwWhenOutsideNode(x, y);
 
-            if (TopRight.IsInNode(x, y))
+            if (TopRight.IsInsideNode(x, y))
                 TopRight = TopRight.Split(x, y);
 
-            if (BottomRight.IsInNode(x, y))
+            if (BottomRight.IsInsideNode(x, y))
                 BottomRight = BottomRight.Split(x, y);
 
-            if (BottomLeft.IsInNode(x, y))
+            if (BottomLeft.IsInsideNode(x, y))
                 BottomLeft = BottomLeft.Split(x, y);
 
-            if (TopLeft.IsInNode(x, y))
+            if (TopLeft.IsInsideNode(x, y))
                 TopLeft = TopLeft.Split(x, y);
 
             invalidateAverage();
@@ -140,16 +140,16 @@ namespace SharpQuadTrees
 
             throwWhenOutsideNode(x, y);
 
-            if (TopRight.IsInNode(x, y))
+            if (TopRight.IsInsideNode(x, y))
                 TopRight = TopRight.Split(leaf, x, y);
 
-            if (BottomRight.IsInNode(x, y))
+            if (BottomRight.IsInsideNode(x, y))
                 BottomRight = BottomRight.Split(leaf, x, y);
 
-            if (BottomLeft.IsInNode(x, y))
+            if (BottomLeft.IsInsideNode(x, y))
                 BottomLeft = BottomLeft.Split(leaf, x, y);
 
-            if (TopLeft.IsInNode(x, y))
+            if (TopLeft.IsInsideNode(x, y))
                 TopLeft = TopLeft.Split(leaf, x, y);
 
             invalidateAverage();

@@ -95,17 +95,17 @@ namespace SharpQuadTrees
         }
 
         /// <summary>
-        /// Returns whether all of the given items would be inside the node.
+        /// Returns whether all of the given items' coordinates are inside the node.
         /// </summary>
         /// <param name="items">The items to check.</param>
-        /// <returns>Whether all of the items would be inside the node.</returns>
-        public bool AreInsideNode(IEnumerable<TContent> items)
+        /// <returns>Whether all of the items' coordinates are inside the node.</returns>
+        public bool AreInsideNode(params TContent[] items)
         {
             return items.Any(item => !IsInsideNode(item));
         }
 
         /// <summary>
-        /// Gets an IEnumerable of content items.
+        /// Gets an IEnumerable of the content items.
         /// </summary>
         /// <returns>IEnumerable of the content items.</returns>
         public abstract IEnumerable<TContent> GetContent();
@@ -117,7 +117,7 @@ namespace SharpQuadTrees
         public abstract IEnumerable<QuadTreeNode<TContent, TAverage>> GetLeafs();
 
         /// <summary>
-        /// Returns whether the given point is inside the node.
+        /// Returns whether the given point's coordinates are inside the node.
         /// </summary>
         /// <param name="x">The x coordinate of the point.</param>
         /// <param name="y">The y coordinate of the point.</param>
@@ -129,10 +129,10 @@ namespace SharpQuadTrees
         }
 
         /// <summary>
-        /// Return whether the given item would be inside the node.
+        /// Return whether the given item's coordinates are inside the node.
         /// </summary>
         /// <param name="item">The item to check.</param>
-        /// <returns>Whether the item would be inside the node.</returns>
+        /// <returns>Whether the item's coordinates are inside the node.</returns>
         public bool IsInsideNode(TContent item)
         {
             return IsInsideNode(controller.GetContentX(item), controller.GetContentY(item));

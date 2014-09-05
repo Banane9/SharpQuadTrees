@@ -30,4 +30,4 @@ For a more detailed example, check the [Quads](https://github.com/Banane9/Quads)
 
 ##License##
 
-#####[GPL V2](https://github.com/Banane9/SharpQuadTrees/blob/master/LICENSE.md)#####
+#####[LGPL V2.1](https://github.com/Banane9/SharpQuadTrees/blob/master/LICENSE.md)#####
